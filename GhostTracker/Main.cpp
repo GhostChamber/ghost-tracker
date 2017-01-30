@@ -3,12 +3,22 @@
 #include <Windows.h>
 #include <Ole2.h>
 
+#include <SDL.h>
+#include <gl\glew.h>
+#include <SDL_opengl.h>
+#include <gl\glu.h>
+#include <string.h>
+#include <stdio.h>
+
 #include "Kinect.h"
+#include "Shaders.h"
 
 const int DEPTH_WIDTH = 512;
 const int DEPTH_HEIGHT = 424;
 const int COLOR_WIDTH = 1920;
 const int COLOR_HEIGHT = 1080;
+const int SCREEN_WIDTH = 1280;
+const int SCREEN_HEIGHT = 720;
 
 void UpdateBodyData();
 
@@ -29,7 +39,23 @@ ICoordinateMapper* mapper;
 CameraSpacePoint lh;
 CameraSpacePoint rh;
 
-int InitKinect()
+SDL_GLContext context;
+SDL_Window* window = nullptr;
+
+void Close()
+{
+	//Deallocate program
+	UnloadShaders();
+
+	//Destroy window	
+	SDL_DestroyWindow(window);
+	window = nullptr;
+
+	//Quit SDL subsystems
+	SDL_Quit();
+}
+
+int InitializeKinect()
 {
 	if (FAILED(GetDefaultKinectSensor(&sensor)))
 	{
@@ -204,15 +230,66 @@ void UpdateBodyData()
 	}
 }
 
+void InitializeGraphics()
+{
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	{
+		printf("SDL could not be initialized.\n");
+		return;
+	}
+
+	//Use OpenGL 3.1 core
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+	window = SDL_CreateWindow("Ghost Tracker", 
+								SDL_WINDOWPOS_UNDEFINED, 
+								SDL_WINDOWPOS_UNDEFINED, 
+								SCREEN_WIDTH,
+								SCREEN_HEIGHT, 
+								SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+	if (window == nullptr)
+	{
+		printf("Window could not be created.\n");
+		return;
+	}
+
+	context = SDL_GL_CreateContext(window);
+	if (context == nullptr)
+	{
+		printf("OpenGL context could not be created.\n");
+		return;
+	}
+
+	glewExperimental = GL_TRUE;
+	GLenum glewError = glewInit();
+	if (glewError != GLEW_OK)
+	{
+		printf("Error initializing GLEW.\n");
+	}
+
+	if (SDL_GL_SetSwapInterval(1) < 0)
+	{
+		printf("Unable to set vertical sync.\n");
+	}
+
+	LoadShaders();
+}
+
 int main(int argc, char* argv[])
 {
-	if (InitKinect() == 0)
+	InitializeGraphics();
+
+	if (InitializeKinect() == 0)
 	{
 		return 1;
 	}
 
+	bool quit = false;
+
 	// Main loop
-	while (GetAsyncKeyState(VK_ESCAPE) == 0)
+	while (!quit)
 	{
 		UpdateBodyData();
 
@@ -231,7 +308,23 @@ int main(int argc, char* argv[])
 		{
 			printf("===========================\n");
 		}
+
+		SDL_Event e;
+		while (!quit)
+		{
+			while(SDL_PollEvent(&e) != 0)
+			{
+				if (e.type == SDL_QUIT)
+				{
+					quit = true;
+				}
+			}
+		}
+
+		SDL_GL_SwapWindow(window);
 	}
+
+	Close();
 
 	return 0;
 }
