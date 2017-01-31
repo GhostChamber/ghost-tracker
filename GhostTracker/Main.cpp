@@ -12,6 +12,7 @@
 
 #include "Kinect.h"
 #include "Shaders.h"
+#include "JointRenderer.h"
 
 const int DEPTH_WIDTH = 512;
 const int DEPTH_HEIGHT = 424;
@@ -42,10 +43,14 @@ CameraSpacePoint rh;
 SDL_GLContext context;
 SDL_Window* window = nullptr;
 
+JointRenderer leftHand;
+JointRenderer rightHand;
+
 void Close()
 {
 	//Deallocate program
 	UnloadShaders();
+	UnloadMeshes();
 
 	//Destroy window	
 	SDL_DestroyWindow(window);
@@ -221,13 +226,25 @@ void UpdateBodyData()
 	if (bodyTracked)
 	{
 		// Draw some arms
-		lh = joints[JointType_WristLeft].Position;
-		const CameraSpacePoint& le = joints[JointType_ElbowLeft].Position;;
-		const CameraSpacePoint& ls = joints[JointType_ShoulderLeft].Position;;
-		rh = joints[JointType_WristRight].Position;;
-		const CameraSpacePoint& re = joints[JointType_ElbowRight].Position;;
-		const CameraSpacePoint& rs = joints[JointType_ShoulderRight].Position;;
+		leftHand.UpdateFromJoint(joints[JointType_WristLeft]);
+		rightHand.UpdateFromJoint(joints[JointType_WristRight]);
 	}
+	else
+	{
+		leftHand.SetPosition(-2.0f, 0.0f, -5.0f);
+		rightHand.SetPosition(2.0f, 0.0f, -5.0f);
+	}
+}
+
+void Render()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Joint rendering
+	JointRenderer::SetRenderingState();
+	leftHand.Render();
+	rightHand.Render();
+	JointRenderer::ClearRenderingState();
 }
 
 void InitializeGraphics()
@@ -241,7 +258,7 @@ void InitializeGraphics()
 	//Use OpenGL 3.1 core
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);//SDL_GL_CONTEXT_PROFILE_CORE);
 
 	window = SDL_CreateWindow("Ghost Tracker", 
 								SDL_WINDOWPOS_UNDEFINED, 
@@ -275,6 +292,8 @@ void InitializeGraphics()
 	}
 
 	LoadShaders();
+	LoadMeshes();
+	glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
 }
 
 int main(int argc, char* argv[])
@@ -287,7 +306,10 @@ int main(int argc, char* argv[])
 	}
 
 	bool quit = false;
+	SDL_Event e;
 
+	leftHand.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
+	rightHand.SetColor(0.0f, 0.0f, 1.0f, 1.0f);
 	// Main loop
 	while (!quit)
 	{
@@ -309,17 +331,15 @@ int main(int argc, char* argv[])
 			printf("===========================\n");
 		}
 
-		SDL_Event e;
-		while (!quit)
+		while (SDL_PollEvent(&e) != 0)
 		{
-			while(SDL_PollEvent(&e) != 0)
+			if (e.type == SDL_QUIT)
 			{
-				if (e.type == SDL_QUIT)
-				{
-					quit = true;
-				}
+				quit = true;
 			}
 		}
+
+		Render();
 
 		SDL_GL_SwapWindow(window);
 	}

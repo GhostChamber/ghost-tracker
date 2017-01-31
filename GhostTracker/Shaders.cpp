@@ -96,6 +96,7 @@ static int BuildProgram(int          nProgramIndex,
 		// Attach individual shaders to the shader program
 		glAttachShader(hProgram, hVertex);
 		glAttachShader(hProgram, hFragment);
+		glBindFragDataLocation(hProgram, 0, "oFragColor");
 
 		// Link program
 		glLinkProgram(hProgram);

@@ -7,21 +7,24 @@
 #include "CubeMesh.h"
 
 static GLuint sMeshVBOHandles[NUM_MESHES] = {0};
+static GLuint sMeshFaces[NUM_MESHES] = {0};
 
 void LoadMeshes()
 {
-	for (int i = 0; i < NUM_MESHES; i++)
-	{
-		;
-	}
+	glGenBuffers(NUM_MESHES, sMeshVBOHandles);
+
+	// Sphere (0)
+	glBindBuffer(GL_ARRAY_BUFFER, sMeshVBOHandles[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(sSphereMeshVertexArray), sSphereMeshVertexArray, GL_STATIC_DRAW);
+	sMeshFaces[0] = sSphereMeshFaceCount;
 }
 
 void UnloadMeshes()
 {
-
+	glDeleteBuffers(NUM_MESHES, sMeshVBOHandles);
 }
 
-GLuint GetMeshVBOHandle(int index)
+GLuint GetMeshVBOHandle(unsigned int index)
 {
 	GLuint handle = 0;
 
@@ -32,3 +35,16 @@ GLuint GetMeshVBOHandle(int index)
 	}
 	return handle;
 }
+
+GLuint GetMeshFaceCount(unsigned int index)
+{
+	GLuint handle = 0;
+
+	if (index >= 0 &&
+		index < Mesh::NUM_MESHES)
+	{
+		handle = sMeshFaces[index];
+	}
+	return handle;
+}
+

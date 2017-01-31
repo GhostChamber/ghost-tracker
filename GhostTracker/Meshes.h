@@ -1,9 +1,10 @@
 #pragma once
 
-enum Meshes
+#include "OpenGL.h"
+
+enum Mesh
 {
-	MESH_SPHERE,
-	MESH_CUBE,
+	SPHERE,
 	NUM_MESHES
 };
 
@@ -11,4 +12,6 @@ void LoadMeshes();
 
 void UnloadMeshes();
 
-GLuint GetMeshVBOHandle();
+GLuint GetMeshVBOHandle(unsigned int index);
+
+GLuint GetMeshFaceCount(unsigned int index);
