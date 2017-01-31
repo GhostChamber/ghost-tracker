@@ -21,9 +21,6 @@
     <ClCompile Include="Shaders.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="JointRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Meshes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -33,15 +30,15 @@
     <ClCompile Include="Matrix.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HandRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpenGL.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Shaders.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="JointRenderer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Meshes.h">
@@ -60,6 +57,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Matrix.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrowMesh.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HandRenderer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

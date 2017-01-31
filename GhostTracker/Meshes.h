@@ -4,7 +4,8 @@
 
 enum Mesh
 {
-	SPHERE,
+	SPHERE = 0,
+	ARROW,
 	NUM_MESHES
 };
 

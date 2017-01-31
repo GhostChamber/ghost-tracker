@@ -4,16 +4,28 @@
 #include "OpenGL.h"
 #include <Kinect.h>
 
-class JointRenderer
+enum HandSideEnum
+{
+	HAND_LEFT,
+	HAND_RIGHT
+};
+
+class HandRenderer
 {
 public:
 
-	JointRenderer();
-	virtual ~JointRenderer();
+	HandRenderer();
+	virtual ~HandRenderer();
+
+	void SetHandSide(unsigned int handSide);
+
+	unsigned int GetHandSide();
 
 	void SetMeshType(unsigned int mesh);
 
-	void UpdateFromJoint(Joint& joint);
+	bool IsClamped();
+
+	void UpdateFromBodyData(Joint* joints);
 
 	void SetPosition(float x,
 					 float y,
@@ -32,7 +44,9 @@ public:
 
 private:
 
+	unsigned int mHandSide;
 	unsigned int mMesh;
+	bool mClamped;
 	float mColor[4];
 	float mPosition[3];
 };

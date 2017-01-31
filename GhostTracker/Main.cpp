@@ -12,7 +12,7 @@
 
 #include "Kinect.h"
 #include "Shaders.h"
-#include "JointRenderer.h"
+#include "HandRenderer.h"
 
 const int DEPTH_WIDTH = 512;
 const int DEPTH_HEIGHT = 424;
@@ -43,8 +43,8 @@ CameraSpacePoint rh;
 SDL_GLContext context;
 SDL_Window* window = nullptr;
 
-JointRenderer leftHand;
-JointRenderer rightHand;
+HandRenderer leftHand;
+HandRenderer rightHand;
 
 void Close()
 {
@@ -226,8 +226,8 @@ void UpdateBodyData()
 	if (bodyTracked)
 	{
 		// Draw some arms
-		leftHand.UpdateFromJoint(joints[JointType_WristLeft]);
-		rightHand.UpdateFromJoint(joints[JointType_WristRight]);
+		leftHand.UpdateFromBodyData(joints);
+		rightHand.UpdateFromBodyData(joints);
 	}
 	else
 	{
@@ -241,10 +241,10 @@ void Render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Joint rendering
-	JointRenderer::SetRenderingState();
+	HandRenderer::SetRenderingState();
 	leftHand.Render();
 	rightHand.Render();
-	JointRenderer::ClearRenderingState();
+	HandRenderer::ClearRenderingState();
 }
 
 void InitializeGraphics()
@@ -258,7 +258,7 @@ void InitializeGraphics()
 	//Use OpenGL 3.1 core
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);//SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
 	window = SDL_CreateWindow("Ghost Tracker", 
 								SDL_WINDOWPOS_UNDEFINED, 
@@ -308,28 +308,15 @@ int main(int argc, char* argv[])
 	bool quit = false;
 	SDL_Event e;
 
+	leftHand.SetHandSide(HAND_LEFT);
+	rightHand.SetHandSide(HAND_RIGHT);
 	leftHand.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
 	rightHand.SetColor(0.0f, 0.0f, 1.0f, 1.0f);
+
 	// Main loop
 	while (!quit)
 	{
 		UpdateBodyData();
-
-		if (bodyTracked)
-		{
-			if (lh.Y > rh.Y)
-			{
-				printf("LEFT                     \n");
-			}
-			else
-			{
-				printf("                    RIGHT\n");
-			}
-		}
-		else
-		{
-			printf("===========================\n");
-		}
 
 		while (SDL_PollEvent(&e) != 0)
 		{

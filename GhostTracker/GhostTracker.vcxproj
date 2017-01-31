@@ -134,7 +134,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="JointRenderer.cpp" />
+    <ClCompile Include="HandRenderer.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Meshes.cpp" />
@@ -142,9 +142,10 @@
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ArrowMesh.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="CubeMesh.h" />
-    <ClInclude Include="JointRenderer.h" />
+    <ClInclude Include="HandRenderer.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Meshes.h" />
     <ClInclude Include="OpenGL.h" />
