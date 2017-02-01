@@ -96,7 +96,12 @@
       <AdditionalLibraryDirectories>$(KINECTSDK20_DIR)/Lib/$(PlatformShortName);$(SolutionDir)/Libraries/$(PlatformShortName);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>kinect20.lib;opengl32.lib;SDL2.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
+      <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
+      <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /b/v/y "$(SolutionDir)\Libraries\$(PlatformShortName)\*.dll" "$(OutDir)\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -110,7 +115,12 @@
       <AdditionalLibraryDirectories>$(KINECTSDK20_DIR)/Lib/$(PlatformShortName);$(SolutionDir)/Libraries/$(PlatformShortName);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>kinect20.lib;opengl32.lib;SDL2.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
+      <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
+      <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /b/v/y "$(SolutionDir)\Libraries\$(PlatformShortName)\*.dll" "$(OutDir)\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -128,7 +138,12 @@
       <AdditionalLibraryDirectories>$(KINECTSDK20_DIR)/Lib/$(PlatformShortName);$(SolutionDir)/Libraries/$(PlatformShortName);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>kinect20.lib;opengl32.lib;SDL2.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
+      <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
+      <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /b/v/y "$(SolutionDir)\Libraries\$(PlatformShortName)\*.dll" "$(OutDir)\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -146,7 +161,12 @@
       <AdditionalLibraryDirectories>$(KINECTSDK20_DIR)/Lib/$(PlatformShortName);$(SolutionDir)/Libraries/$(PlatformShortName);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>kinect20.lib;opengl32.lib;SDL2.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
+      <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
+      <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /b/v/y "$(SolutionDir)\Libraries\$(PlatformShortName)\*.dll" "$(OutDir)\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="HandRenderer.cpp" />
