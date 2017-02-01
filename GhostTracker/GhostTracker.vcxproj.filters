@@ -1,69 +1,43 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="HandRenderer.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="Meshes.cpp" />
+    <ClCompile Include="Shaders.cpp" />
+    <ClCompile Include="Transmitter.cpp" />
+    <ClCompile Include="Vector.cpp" />
+    <ClCompile Include="Message.cpp">
+      <Filter>Messages</Filter>
     </ClCompile>
-    <ClCompile Include="Shaders.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Meshes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Vector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Matrix.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HandRenderer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="MsgMouse.cpp">
+      <Filter>Messages</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="OpenGL.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="ArrowMesh.h" />
+    <ClInclude Include="Color.h" />
+    <ClInclude Include="CubeMesh.h" />
+    <ClInclude Include="HandRenderer.h" />
+    <ClInclude Include="Matrix.h" />
+    <ClInclude Include="Meshes.h" />
+    <ClInclude Include="OpenGL.h" />
+    <ClInclude Include="Shaders.h" />
+    <ClInclude Include="SphereMesh.h" />
+    <ClInclude Include="Transmitter.h" />
+    <ClInclude Include="Vector.h" />
+    <ClInclude Include="Message.h">
+      <Filter>Messages</Filter>
     </ClInclude>
-    <ClInclude Include="Shaders.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="MsgMouse.h">
+      <Filter>Messages</Filter>
     </ClInclude>
-    <ClInclude Include="Meshes.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CubeMesh.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SphereMesh.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Color.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Matrix.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ArrowMesh.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HandRenderer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
+    <ClInclude Include="Types.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Messages">
+      <UniqueIdentifier>{51adf1f8-e432-456a-8917-44724393782e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

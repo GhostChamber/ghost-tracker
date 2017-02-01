@@ -7,7 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#define CLAMP_DISTANCE_THRESHOLD 0.009f
+#define CLAMP_DISTANCE_THRESHOLD 0.007f
 
 static float sVertices[] = { -0.5f, 0.5f, 0.0f, 
 						0.0f, -0.5f, 0.0f,
@@ -24,9 +24,9 @@ HandRenderer::HandRenderer() :
 	mColor[2] = 0.0f;
 	mColor[3] = 1.0f;
 
-	mPosition[0] = 0.0f;
-	mPosition[1] = 0.0f;
-	mPosition[2] = 0.0f;
+	mPosition.x = 0.0f;
+	mPosition.y = 0.0f;
+	mPosition.z = 0.0f;
 }
 
 HandRenderer::~HandRenderer()
@@ -37,12 +37,14 @@ HandRenderer::~HandRenderer()
 void HandRenderer::UpdateFromBodyData(Joint* joints)
 {
 	CameraSpacePoint wristPoint;
+	CameraSpacePoint handPoint;
 	CameraSpacePoint thumbPoint;
 	CameraSpacePoint tipPoint;
 
 	if (mHandSide == HAND_LEFT)
 	{
 		wristPoint = joints[JointType_WristLeft].Position;
+		handPoint = joints[JointType_HandLeft].Position;
 		thumbPoint = joints[JointType_ThumbLeft].Position;
 		tipPoint = joints[JointType_HandTipLeft].Position;
 		//tipPoint = joints[JointType_HipLeft].Position;
@@ -50,20 +52,15 @@ void HandRenderer::UpdateFromBodyData(Joint* joints)
 	else
 	{
 		wristPoint = joints[JointType_WristRight].Position;
+		handPoint = joints[JointType_HandRight].Position;
 		thumbPoint = joints[JointType_ThumbRight].Position;
 		tipPoint = joints[JointType_HandTipRight].Position;
 		//tipPoint = joints[JointType_HipRight].Position;
 	}
 
-	SetPosition(wristPoint.X, wristPoint.Y, wristPoint.Z);
-
-	float clampDistanceSquared = (thumbPoint.X - tipPoint.X) * (thumbPoint.X - tipPoint.X) +
-									(thumbPoint.Y - tipPoint.Y) * (thumbPoint.Y - tipPoint.Y) + 
-									(thumbPoint.Z - tipPoint.Z) * (thumbPoint.Z - tipPoint.Z);
-
-	mClamped = clampDistanceSquared < CLAMP_DISTANCE_THRESHOLD;
-
-	// Check if crab claw is clamped.
+	UpdatePosition(handPoint);
+	UpdateRotation(wristPoint, handPoint);
+	UpdateClamp(thumbPoint, tipPoint);
 }
 
 void HandRenderer::SetHandSide(unsigned int handSide)
@@ -85,9 +82,9 @@ void HandRenderer::SetPosition(float x,
 	float y,
 	float z)
 {
-	mPosition[0] = x;
-	mPosition[1] = y;
-	mPosition[2] = z;
+	mPosition.x = x;
+	mPosition.y = y;
+	mPosition.z = z;
 }
 
 void HandRenderer::SetColor(float r,
@@ -124,9 +121,16 @@ void HandRenderer::Render()
 	//mvp = proj * view * model;
 	//glm::perspectiveFov(45.0f, 0.0577f, 0.03639f, 0.1f, 1024.0f);
 
+	//glm::mat4 glmLookAt = glm::lookAt(mPosition, mPosition + mDirection, glm::vec3(0.0f, 0.0f, -1.0f));
+	//Matrix lookAt;
+	//lookAt.Load(value_ptr(glmLookAt));
+
 	Matrix model;
 	model.Translate(mPosition[0], mPosition[1], -1.0f * mPosition[2]);
 	model.Scale(0.2f, 0.2f, 0.2f);
+	//model = model * lookAt;
+	//model = lookAt * model;
+
 	Matrix view;
 	Matrix projection;
 	projection.Frustum(-0.0577f, 0.0577f, -0.03639f, 0.03639f, 0.1f, 1024.0f);
@@ -166,4 +170,26 @@ void HandRenderer::ClearRenderingState()
 {
 	glDisable(GL_DEPTH_TEST);
 	//glBindVertexArray(0);
+}
+
+void HandRenderer::UpdatePosition(CameraSpacePoint handPoint)
+{
+	SetPosition(handPoint.X, handPoint.Y, handPoint.Z);
+}
+
+void HandRenderer::UpdateRotation(CameraSpacePoint wristPoint, CameraSpacePoint handPoint)
+{
+	mDirection.x = handPoint.X - wristPoint.X;
+	mDirection.y = handPoint.Y - wristPoint.Y;
+	mDirection.z = handPoint.Z - wristPoint.Z;
+}
+
+void HandRenderer::UpdateClamp(CameraSpacePoint thumbPoint, CameraSpacePoint tipPoint)
+{
+	// Check if crab claw is clamped.
+	float clampDistanceSquared = (thumbPoint.X - tipPoint.X) * (thumbPoint.X - tipPoint.X) +
+		(thumbPoint.Y - tipPoint.Y) * (thumbPoint.Y - tipPoint.Y) +
+		(thumbPoint.Z - tipPoint.Z) * (thumbPoint.Z - tipPoint.Z);
+
+	mClamped = clampDistanceSquared < CLAMP_DISTANCE_THRESHOLD;
 }

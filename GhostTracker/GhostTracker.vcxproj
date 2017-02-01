@@ -138,7 +138,10 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Meshes.cpp" />
+    <ClCompile Include="Message.cpp" />
+    <ClCompile Include="MsgMouse.cpp" />
     <ClCompile Include="Shaders.cpp" />
+    <ClCompile Include="Transmitter.cpp" />
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -148,9 +151,13 @@
     <ClInclude Include="HandRenderer.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Meshes.h" />
+    <ClInclude Include="Message.h" />
+    <ClInclude Include="MsgMouse.h" />
     <ClInclude Include="OpenGL.h" />
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="SphereMesh.h" />
+    <ClInclude Include="Transmitter.h" />
+    <ClInclude Include="Types.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

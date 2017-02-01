@@ -3,11 +3,19 @@
 #include "Meshes.h"
 #include "OpenGL.h"
 #include <Kinect.h>
+#include "glm/glm.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 enum HandSideEnum
 {
 	HAND_LEFT,
 	HAND_RIGHT
+};
+
+enum HandGestureEnum
+{
+	
 };
 
 class HandRenderer
@@ -44,9 +52,15 @@ public:
 
 private:
 
+	void UpdateGestures();
+	void UpdatePosition(CameraSpacePoint handPoint);
+	void UpdateRotation(CameraSpacePoint wristPoint, CameraSpacePoint handPoint);
+	void UpdateClamp(CameraSpacePoint thumbPoint, CameraSpacePoint tipPoint);
+
 	unsigned int mHandSide;
 	unsigned int mMesh;
 	bool mClamped;
 	float mColor[4];
-	float mPosition[3];
+	glm::vec3 mPosition;
+	glm::vec3 mDirection;
 };
