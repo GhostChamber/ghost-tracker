@@ -7,5 +7,4 @@ documentation/
 bin/
 obj/
 *.TMP
-x64/
-Debug/
+*.user

@@ -90,11 +90,11 @@ void Matrix::Rotate(float fAngle,
     fRadians = fAngle * DEGREES_TO_RADIANS;
 
     // Calculate (once) the trig values needed in matrix generation.
-    c = cos(fRadians);
-    s = sin(fRadians);
+    c = static_cast<float>(cos(fRadians));
+    s = static_cast<float>(sin(fRadians));
 
     // Check if vector is normalized already.
-    fMagnitude = sqrt(x*x + y*y + z*z);
+    fMagnitude = static_cast<float>(sqrt(x*x + y*y + z*z));
     if (fMagnitude != 1.0f)
     {
         // Check for divide-by-zero errors
@@ -273,7 +273,7 @@ void Matrix::Inverse()
             if (fabs(arMat[i + 4*j]) > fMax)
             {
                 nTarget = i;
-                fMax    = fabs(arMat[i + 4*j]);
+                fMax    = static_cast<float>(fabs(arMat[i + 4*j]));
             }
         }
 
