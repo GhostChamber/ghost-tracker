@@ -1,0 +1,138 @@
+#include "StreamManager.h"
+#include "Constants.h"
+#include "Enums.h"
+#include "ViewportCapturer.h"
+#include <Windows.h>
+#include <assert.h>
+#include <stdio.h>
+#include <SDL_syswm.h>
+
+StreamManager::StreamManager() :
+	mStreamType(StreamType::REPLICATED),
+	mCommandState(CommandState::LISTENING),
+	mPoint1X(0),
+	mPoint1Y(0),
+	mPoint2X(0),
+	mPoint2Y(0)
+{
+	for (int32 i = 0; i < NUM_DISPLAY_QUADRANTS; i++)
+	{
+		mIndividualCapturers[i].SetQuadrant(i);
+	}
+}
+
+StreamManager::~StreamManager()
+{
+
+}
+
+void StreamManager::Update()
+{
+	mInputState.Update();
+}
+
+void StreamManager::Render()
+{
+	if (mStreamType == StreamType::REPLICATED)
+	{
+		mReplicatedCapturer.RenderAllQuadrants();
+	}
+	else
+	{
+		for (int i = 0; i < NUM_DISPLAY_QUADRANTS; i++)
+		{
+			mIndividualCapturers[i].RenderIndividualQuadrant();
+		}
+	}
+}
+
+void StreamManager::ActivateHotkey(WPARAM wparam, LPARAM lparam)
+{
+	MessageBox(NULL, "HOTKEY DETECTED!", "ERROR", MB_OK | MB_ICONEXCLAMATION);
+
+	if (mCommandState == CommandState::LISTENING)
+	{
+		switch (HIWORD(lparam))
+		{
+		case '1':
+			mCommandState = CommandState::WAITING_FIRST_POINT;
+			mCommandedCapturer = &mIndividualCapturers[0];
+			break;
+		case '2':
+			mCommandState = CommandState::WAITING_FIRST_POINT;
+			mCommandedCapturer = &mIndividualCapturers[1];
+			break;
+		case '3':
+			mCommandState = CommandState::WAITING_FIRST_POINT;
+			mCommandedCapturer = &mIndividualCapturers[2];
+			break;
+		case '4':
+			mCommandState = CommandState::WAITING_FIRST_POINT;
+			mCommandedCapturer = &mIndividualCapturers[3];
+			break;
+
+		case '7':
+			// Toggle Stream Type
+			if (mStreamType == StreamType::INDIVIDUAL)
+			{
+				mStreamType = StreamType::REPLICATED;
+			}
+			else
+			{
+				mStreamType = StreamType::INDIVIDUAL;
+			}
+			break;
+
+		case '0':
+			mCommandState = CommandState::WAITING_FIRST_POINT;
+			mCommandedCapturer = &mReplicatedCapturer;
+			break;
+		}
+	}
+	
+	else if (HIWORD(lparam) == VK_LBUTTON)
+	{
+		if (mCommandState == CommandState::WAITING_FIRST_POINT)
+		{
+			POINT p;
+			GetCursorPos(&p);
+			mPoint1X = p.x;
+			mPoint1Y = p.y;
+
+			mCommandState = CommandState::WAITING_SECOND_POINT;
+			printf("Point 1 Captured\n");
+		}
+		else if (mCommandState == CommandState::WAITING_SECOND_POINT)
+		{
+			POINT p;
+			GetCursorPos(&p);
+			mPoint2X = p.x;
+			mPoint2Y = p.y;
+
+			assert(mCommandedCapturer != nullptr);
+
+			mCommandedCapturer->SetRect(mPoint1X,
+				mPoint1Y,
+				mPoint2X - mPoint1X,
+				mPoint2Y - mPoint1Y);
+
+			mCommandedCapturer = nullptr;
+			mCommandState = CommandState::LISTENING;
+			printf("Point 2 Captured\n");
+		}
+	}
+}
+
+void StreamManager::SetupHotkeys(SDL_Window* window) const
+{
+	SDL_SysWMinfo wmInfo;
+	SDL_VERSION(&wmInfo.version);
+	SDL_GetWindowWMInfo(window, &wmInfo);
+
+	RegisterHotKey(wmInfo.info.win.window, static_cast<int32>(HotkeyID::COMMAND_VIEWPORT_1), MOD_CONTROL | MOD_ALT, '1');
+	RegisterHotKey(wmInfo.info.win.window, static_cast<int32>(HotkeyID::COMMAND_VIEWPORT_2), MOD_CONTROL | MOD_ALT, '2');
+	RegisterHotKey(wmInfo.info.win.window, static_cast<int32>(HotkeyID::COMMAND_VIEWPORT_3), MOD_CONTROL | MOD_ALT, '3');
+	RegisterHotKey(wmInfo.info.win.window, static_cast<int32>(HotkeyID::COMMAND_VIEWPORT_4), MOD_CONTROL | MOD_ALT, '4');
+	RegisterHotKey(wmInfo.info.win.window, static_cast<int32>(HotkeyID::TOGGLE_STREAM_TYPE), MOD_CONTROL | MOD_ALT, '7');
+	RegisterHotKey(wmInfo.info.win.window, static_cast<int32>(HotkeyID::COMMAND_REPLICATED_VIEWPORT), MOD_CONTROL | MOD_ALT, '0');
+}

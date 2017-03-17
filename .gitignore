@@ -6,5 +6,8 @@ documentation/
 *.sdf
 bin/
 obj/
+Debug/
+Release/
+x64/
 *.TMP
 *.user

@@ -22,6 +22,7 @@
     <ProjectGuid>{5A9A96DA-5EF3-4E38-B1AA-B02D0D189FD8}</ProjectGuid>
     <RootNamespace>GhostTracker</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>GhostStreamer</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -95,7 +96,7 @@
     <Link>
       <AdditionalLibraryDirectories>$(KINECTSDK20_DIR)/Lib/$(PlatformShortName);$(SolutionDir)/Libraries/$(PlatformShortName);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>kinect20.lib;opengl32.lib;SDL2.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
       <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
     </Link>
@@ -169,31 +170,29 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="HandRenderer.cpp" />
+    <ClCompile Include="InputState.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Matrix.cpp" />
-    <ClCompile Include="Meshes.cpp" />
     <ClCompile Include="Message.cpp" />
     <ClCompile Include="MsgMouse.cpp" />
     <ClCompile Include="Shaders.cpp" />
-    <ClCompile Include="Transmitter.cpp" />
-    <ClCompile Include="Vector.cpp" />
+    <ClCompile Include="StreamManager.cpp" />
+    <ClCompile Include="ViewportCapturer.cpp" />
+    <ClCompile Include="ViewportTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ArrowMesh.h" />
-    <ClInclude Include="Color.h" />
-    <ClInclude Include="CubeMesh.h" />
-    <ClInclude Include="HandRenderer.h" />
+    <ClInclude Include="Constants.h" />
+    <ClInclude Include="Enums.h" />
+    <ClInclude Include="InputState.h" />
     <ClInclude Include="Matrix.h" />
-    <ClInclude Include="Meshes.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="MsgMouse.h" />
     <ClInclude Include="OpenGL.h" />
     <ClInclude Include="Shaders.h" />
-    <ClInclude Include="SphereMesh.h" />
-    <ClInclude Include="Transmitter.h" />
+    <ClInclude Include="StreamManager.h" />
     <ClInclude Include="Types.h" />
-    <ClInclude Include="Vector.h" />
+    <ClInclude Include="ViewportCapturer.h" />
+    <ClInclude Include="ViewportTexture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

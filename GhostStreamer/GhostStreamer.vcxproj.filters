@@ -1,32 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="HandRenderer.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Matrix.cpp" />
-    <ClCompile Include="Meshes.cpp" />
     <ClCompile Include="Shaders.cpp" />
-    <ClCompile Include="Transmitter.cpp" />
-    <ClCompile Include="Vector.cpp" />
     <ClCompile Include="Message.cpp">
       <Filter>Messages</Filter>
     </ClCompile>
     <ClCompile Include="MsgMouse.cpp">
       <Filter>Messages</Filter>
     </ClCompile>
+    <ClCompile Include="StreamManager.cpp" />
+    <ClCompile Include="InputState.cpp" />
+    <ClCompile Include="ViewportCapturer.cpp" />
+    <ClCompile Include="ViewportTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ArrowMesh.h" />
-    <ClInclude Include="Color.h" />
-    <ClInclude Include="CubeMesh.h" />
-    <ClInclude Include="HandRenderer.h" />
     <ClInclude Include="Matrix.h" />
-    <ClInclude Include="Meshes.h" />
     <ClInclude Include="OpenGL.h" />
     <ClInclude Include="Shaders.h" />
-    <ClInclude Include="SphereMesh.h" />
-    <ClInclude Include="Transmitter.h" />
-    <ClInclude Include="Vector.h" />
     <ClInclude Include="Message.h">
       <Filter>Messages</Filter>
     </ClInclude>
@@ -34,6 +26,12 @@
       <Filter>Messages</Filter>
     </ClInclude>
     <ClInclude Include="Types.h" />
+    <ClInclude Include="ViewportTexture.h" />
+    <ClInclude Include="StreamManager.h" />
+    <ClInclude Include="ViewportCapturer.h" />
+    <ClInclude Include="Constants.h" />
+    <ClInclude Include="Enums.h" />
+    <ClInclude Include="InputState.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Messages">
