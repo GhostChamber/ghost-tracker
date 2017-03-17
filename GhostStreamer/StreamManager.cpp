@@ -19,6 +19,8 @@ StreamManager::StreamManager() :
 	{
 		mIndividualCapturers[i].SetQuadrant(i);
 	}
+
+	ViewportCapturer::InitializeMeshArrays();
 }
 
 StreamManager::~StreamManager()
@@ -29,10 +31,20 @@ StreamManager::~StreamManager()
 void StreamManager::Update()
 {
 	mInputState.Update();
+
+	for (int i = 0; i < NUM_DISPLAY_QUADRANTS; i++)
+	{
+		mIndividualCapturers[i].Update();
+	}
+
+	mReplicatedCapturer.Update();
 }
 
 void StreamManager::Render()
 {
+	// Render Viewports
+	ViewportCapturer::SetRenderingState();
+
 	if (mStreamType == StreamType::REPLICATED)
 	{
 		mReplicatedCapturer.RenderAllQuadrants();
@@ -44,6 +56,8 @@ void StreamManager::Render()
 			mIndividualCapturers[i].RenderIndividualQuadrant();
 		}
 	}
+
+	ViewportCapturer::ClearRenderingState();
 }
 
 void StreamManager::ActivateHotkey(WPARAM wparam, LPARAM lparam)

@@ -4,6 +4,7 @@
 #include "Types.h"
 #include "Constants.h"
 #include <Windows.h>
+#include "Matrix.h"
 
 class ViewportCapturer
 {
@@ -26,7 +27,14 @@ public:
 
 	void SetQuadrant(int32 quadrant);
 
+	static void InitializeMeshArrays();
+
+	static void SetRenderingState();
+	static void ClearRenderingState();
+
 private:
+
+	void Render(Matrix& rotationMatrix) const;
 
 	void CopyPixelsFromScreen();
 	void CopyPixelsFromScreen_EXPERIMENTAL();
@@ -35,6 +43,9 @@ private:
 	void DestroyDC();
 
 private:
+
+	static float sPositionArray[2*4];
+	static float sTexcoordArray[2*4];
 
 	ViewportTexture mViewportTexture;
 

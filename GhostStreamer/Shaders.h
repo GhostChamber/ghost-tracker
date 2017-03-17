@@ -16,23 +16,33 @@ GLuint GetShaderProgram(int nIndex);
 
 static const char* pColorMeshVertexShader =
 GLSL_VERSION_STRING
-"in vec3 aPosition;\n"
-"uniform mat4 uMatrixMVP;\n"
+"in vec2 aPosition;\n"
+"in vec2 aTexcoord;\n"
+"out vec2 vTexcoord;\n"
+"uniform mat4 uMatrix;\n"
+"uniform float uWidthScale;\n"
+"uniform float uHeightScale;\n"
 
 "void main()\n"
 "{\n"
-"    gl_Position = uMatrixMVP * vec4(aPosition, 1.0);\n"
-//"    gl_Position = vec4(aPosition.x, aPosition.y, 0.0f, 1.0);\n"
+"    vTexcoord = vec2(aTexcoord.x * uWidthScale, aTexcoord.y * uHeightScale);\n"
+"    gl_Position = uMatrix * vec4(aPosition, 0.0, 1.0);\n"
+//"    gl_Position = vec4(aPosition, 0.0f, 1.0);\n"
 "}\n";
 
 static const char* pColorMeshFragmentShader = 
 GLSL_VERSION_STRING
 "precision mediump float;\n"
-"uniform vec4 uColor;\n"
+"uniform sampler2D uTexture;\n"
+"in vec2 vTexcoord;\n"
 "out vec4 oFragColor;\n"
 
 "void main()\n"
 "{\n"
-"    oFragColor = uColor;\n"
-//"    oFragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
+"    vec4 color = texture2D(uTexture, vTexcoord);\n"
+"    float value = 0.0;\n"
+"    value = color.r + color.g + color.b;\n"
+"    color.rgb = color.rgb * float(value > 0.4);\n"
+"    oFragColor = color;\n"
+//"   oFragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);\n"
 "}\n";

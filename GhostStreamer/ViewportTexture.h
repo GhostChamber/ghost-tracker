@@ -13,7 +13,9 @@ public:
 	void Initialize();
 	void Destroy();
 
-	void StreamPixelsToGPU(uint8* pixels);
+	void StreamPixelsToGPU(uint8* pixels,
+						   int32 width,
+						   int32 height);
 
 	GLuint GetTextureID() const;
 

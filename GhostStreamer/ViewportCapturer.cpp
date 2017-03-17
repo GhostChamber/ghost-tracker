@@ -3,6 +3,12 @@
 #include <string.h>
 #include <stdio.h>
 #include <Windows.h>
+#include "Matrix.h"
+#include "OpenGL.h"
+#include "Shaders.h"
+
+float ViewportCapturer::sPositionArray[2*4] = {0};
+float ViewportCapturer::sTexcoordArray[2*4] = {0};
 
 ViewportCapturer::ViewportCapturer() :
 	mX(0),
@@ -16,7 +22,8 @@ ViewportCapturer::ViewportCapturer() :
 	mPixelBuffer = new uint8[MAX_VIEWPORT_WIDTH * MAX_VIEWPORT_HEIGHT * 4];
 	memset(mPixelBuffer, 0, MAX_VIEWPORT_WIDTH * MAX_VIEWPORT_HEIGHT * 4);
 
-	//InitializeDC();
+	// InitializeDC();
+	mViewportTexture.Initialize();
 }
 
 ViewportCapturer::ViewportCapturer(int32 quadrant) :
@@ -64,27 +71,124 @@ void ViewportCapturer::Update()
 		//CopyPixelsFromScreen();
 		CopyPixelsFromScreen_EXPERIMENTAL();
 
-		mViewportTexture.StreamPixelsToGPU(mPixelBuffer);
+		mViewportTexture.StreamPixelsToGPU(mPixelBuffer, mWidth, mHeight);
 	}
 }
 
 void ViewportCapturer::RenderIndividualQuadrant() const
 {
-	// TODO: Render logic for quadrant of screen
+	if (mWidth != 0 &&
+		mHeight != 0 && 
+		mViewportTexture.GetTextureID() != 0U)
+	{
+		// Assumed that caller has enabled rendering state with 
+		// ViewportCapturer::SetRenderingState().
+
+		Matrix rotationMatrix;
+		rotationMatrix.Rotate(90.0f * mQuadrant, 0.0f, 0.0f, 1.0f);
+		Render(rotationMatrix);
+	}
 }
 
 void ViewportCapturer::RenderAllQuadrants() const 
 {
-	// TODO: Render logic for rendering to entire screen 4 times.
-	for (int i = 0; i < NUM_DISPLAY_QUADRANTS; i++)
+	if (mWidth != 0 &&
+		mHeight != 0 &&
+		mViewportTexture.GetTextureID() != 0U)
 	{
-		
+		// Assumed that caller has enabled rendering state with 
+		// ViewportCapturer::SetRenderingState().
+		Matrix rotationMatrix;
+		for (int i = 0; i < NUM_DISPLAY_QUADRANTS; i++)
+		{
+			rotationMatrix.Rotate(90.0f, 0.0f, 0.0f, 1.0f);
+			Render(rotationMatrix);
+		}
 	}
+}
+
+void ViewportCapturer::Render(Matrix& rotationMatrix) const
+{
+	GLuint hProg = GetShaderProgram(SHADER_COLOR_MESH);
+
+	GLint hPosition = glGetAttribLocation(hProg, "aPosition");
+	GLint hTexcoord = glGetAttribLocation(hProg, "aTexcoord");
+
+	glEnableVertexAttribArray(hPosition);
+	glEnableVertexAttribArray(hTexcoord);
+
+	glVertexAttribPointer(hPosition,
+		2,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		sPositionArray);
+	glVertexAttribPointer(hTexcoord,
+		2,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		sTexcoordArray);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, mViewportTexture.GetTextureID());
+
+	GLint hTexture = glGetUniformLocation(hProg, "uTexture");
+	GLint hMatrix = glGetUniformLocation(hProg, "uMatrix");
+	GLint hWidthScale = glGetUniformLocation(hProg, "uWidthScale");
+	GLint hHeightScale = glGetUniformLocation(hProg, "uHeightScale");
+
+	glUniform1i(hTexture, 0);
+	glUniformMatrix4fv(hMatrix, 1, GL_FALSE, rotationMatrix.GetArray());
+	glUniform1f(hWidthScale, static_cast<float>(mWidth) / MAX_VIEWPORT_WIDTH);
+	glUniform1f(hHeightScale, static_cast<float>(mHeight) / MAX_VIEWPORT_HEIGHT);
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
 void ViewportCapturer::SetQuadrant(int32 quadrant)
 {
 	mQuadrant = quadrant;
+}
+
+void ViewportCapturer::InitializeMeshArrays()
+{
+	// Top left
+	sPositionArray[0] = -1.0f;
+	sPositionArray[1] = 1.0f;
+	sTexcoordArray[0] = 0.0f;
+	sTexcoordArray[1] = 1.0f;
+
+	// Bottom left
+	sPositionArray[2] = 0.0f - CENTER_OFFSET;
+	sPositionArray[3] = 0.0f + CENTER_OFFSET;
+	sTexcoordArray[2] = 0.5f - CENTER_OFFSET/2;
+	sTexcoordArray[3] = 0.0f;
+
+	// Top right
+	sPositionArray[4] = 1.0f;
+	sPositionArray[5] = 1.0f;
+	sTexcoordArray[4] = 1.0f;
+	sTexcoordArray[5] = 1.0f;
+
+	// Bottom right
+	sPositionArray[6] = 0.0f + CENTER_OFFSET;
+	sPositionArray[7] = 0.0f + CENTER_OFFSET;
+	sTexcoordArray[6] = 0.5f + CENTER_OFFSET/2;
+	sTexcoordArray[7] = 0.0f;
+}
+
+void ViewportCapturer::SetRenderingState()
+{
+	glUseProgram(GetShaderProgram(SHADER_COLOR_MESH));
+	glDisable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
+}
+
+void ViewportCapturer::ClearRenderingState()
+{
+	glDisable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
 }
 
 void ViewportCapturer::CopyPixelsFromScreen_EXPERIMENTAL()
@@ -129,7 +233,6 @@ void ViewportCapturer::InitializeDC()
 	mCaptureBitmap = CreateCompatibleBitmap(hDesktopDC, MAX_VIEWPORT_WIDTH, MAX_VIEWPORT_HEIGHT);
 
 	ReleaseDC(hDesktopWnd, hDesktopDC);
-
 }
 
 void ViewportCapturer::DestroyDC()
