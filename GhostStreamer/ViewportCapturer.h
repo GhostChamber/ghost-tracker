@@ -44,8 +44,8 @@ private:
 
 private:
 
-	static float sPositionArray[2*4];
-	static float sTexcoordArray[2*4];
+	static float sPositionArray[2*5];
+	static float sTexcoordArray[2*5];
 
 	ViewportTexture mViewportTexture;
 

@@ -7,8 +7,8 @@
 #include "OpenGL.h"
 #include "Shaders.h"
 
-float ViewportCapturer::sPositionArray[2*4] = {0};
-float ViewportCapturer::sTexcoordArray[2*4] = {0};
+float ViewportCapturer::sPositionArray[2*5] = {0};
+float ViewportCapturer::sTexcoordArray[2*5] = {0};
 
 ViewportCapturer::ViewportCapturer() :
 	mX(0),
@@ -143,7 +143,7 @@ void ViewportCapturer::Render(Matrix& rotationMatrix) const
 	glUniform1f(hWidthScale, static_cast<float>(mWidth) / MAX_VIEWPORT_WIDTH);
 	glUniform1f(hHeightScale, static_cast<float>(mHeight) / MAX_VIEWPORT_HEIGHT);
 
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 5);
 }
 
 void ViewportCapturer::SetQuadrant(int32 quadrant)
@@ -165,10 +165,10 @@ void ViewportCapturer::InitializeMeshArrays()
 	sTexcoordArray[2] = 0.5f - CENTER_OFFSET/2;
 	sTexcoordArray[3] = 0.0f;
 
-	// Top right
-	sPositionArray[4] = 1.0f;
+	// Top middle
+	sPositionArray[4] = 0.0f;
 	sPositionArray[5] = 1.0f;
-	sTexcoordArray[4] = 1.0f;
+	sTexcoordArray[4] = 0.5f;
 	sTexcoordArray[5] = 1.0f;
 
 	// Bottom right
@@ -176,6 +176,12 @@ void ViewportCapturer::InitializeMeshArrays()
 	sPositionArray[7] = 0.0f + CENTER_OFFSET;
 	sTexcoordArray[6] = 0.5f + CENTER_OFFSET/2;
 	sTexcoordArray[7] = 0.0f;
+
+	// Top right
+	sPositionArray[8] = 1.0f;
+	sPositionArray[9] = 1.0f;
+	sTexcoordArray[8] = 1.0f;
+	sTexcoordArray[9] = 1.0f;
 }
 
 void ViewportCapturer::SetRenderingState()
