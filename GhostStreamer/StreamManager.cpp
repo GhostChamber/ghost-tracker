@@ -67,7 +67,6 @@ void StreamManager::ActivateHotkey(WPARAM wparam, LPARAM lparam)
 		switch (HIWORD(lparam))
 		{
 		case '1':
-			MessageBox(NULL, "Commanding viewport 1", "Command", MB_OK | MB_ICONEXCLAMATION);
 			mCommandState = CommandState::WAITING_FIRST_POINT;
 			mCommandedCapturer = &mIndividualCapturers[0];
 			break;
@@ -82,6 +81,10 @@ void StreamManager::ActivateHotkey(WPARAM wparam, LPARAM lparam)
 		case '4':
 			mCommandState = CommandState::WAITING_FIRST_POINT;
 			mCommandedCapturer = &mIndividualCapturers[3];
+			break;
+
+		case '6':
+			ViewportCapturer::FlipTexcoords();
 			break;
 
 		case '7':
@@ -151,6 +154,7 @@ void StreamManager::SetupHotkeys(SDL_Window* window) const
 	RegisterHotKey(wmInfo.info.win.window, static_cast<int32>(HotkeyID::COMMAND_VIEWPORT_2), MOD_CONTROL | MOD_ALT, '2');
 	RegisterHotKey(wmInfo.info.win.window, static_cast<int32>(HotkeyID::COMMAND_VIEWPORT_3), MOD_CONTROL | MOD_ALT, '3');
 	RegisterHotKey(wmInfo.info.win.window, static_cast<int32>(HotkeyID::COMMAND_VIEWPORT_4), MOD_CONTROL | MOD_ALT, '4');
+	RegisterHotKey(wmInfo.info.win.window, static_cast<int32>(HotkeyID::FLIP_TEXCOORDS), MOD_CONTROL | MOD_ALT, '6');
 	RegisterHotKey(wmInfo.info.win.window, static_cast<int32>(HotkeyID::TOGGLE_STREAM_TYPE), MOD_CONTROL | MOD_ALT, '7');
 	RegisterHotKey(wmInfo.info.win.window, static_cast<int32>(HotkeyID::COMMAND_REPLICATED_VIEWPORT), MOD_CONTROL | MOD_ALT, '0');
 	RegisterHotKey(wmInfo.info.win.window, static_cast<int32>(HotkeyID::SELECT_POINT), MOD_CONTROL | MOD_ALT, 'X');

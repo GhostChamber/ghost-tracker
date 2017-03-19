@@ -28,6 +28,8 @@ public:
 	void SetQuadrant(int32 quadrant);
 
 	static void InitializeMeshArrays();
+	
+	static void FlipTexcoords();
 
 	static void SetRenderingState();
 	static void ClearRenderingState();
@@ -37,7 +39,6 @@ private:
 	void Render(Matrix& rotationMatrix) const;
 
 	void CopyPixelsFromScreen();
-	void CopyPixelsFromScreen_EXPERIMENTAL();
 
 	void InitializeDC();
 	void DestroyDC();

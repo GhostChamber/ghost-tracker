@@ -22,7 +22,7 @@ ViewportCapturer::ViewportCapturer() :
 	mPixelBuffer = new uint8[MAX_VIEWPORT_WIDTH * MAX_VIEWPORT_HEIGHT * 4];
 	memset(mPixelBuffer, 0, MAX_VIEWPORT_WIDTH * MAX_VIEWPORT_HEIGHT * 4);
 
-	// InitializeDC();
+	InitializeDC();
 	mViewportTexture.Initialize();
 }
 
@@ -34,7 +34,7 @@ ViewportCapturer::ViewportCapturer(int32 quadrant) :
 
 ViewportCapturer::~ViewportCapturer()
 {
-	//DestroyDC();
+	DestroyDC();
 
 	delete [] mPixelBuffer;
 	mPixelBuffer = nullptr;
@@ -68,8 +68,8 @@ void ViewportCapturer::Update()
 		mHeight < MAX_VIEWPORT_HEIGHT &&
 		mViewportTexture.GetTextureID() != 0)
 	{
-		//CopyPixelsFromScreen();
-		CopyPixelsFromScreen_EXPERIMENTAL();
+		CopyPixelsFromScreen();
+		//CopyPixelsFromScreen_EXPERIMENTAL();
 
 		mViewportTexture.StreamPixelsToGPU(mPixelBuffer, mWidth, mHeight);
 	}
@@ -184,6 +184,15 @@ void ViewportCapturer::InitializeMeshArrays()
 	sTexcoordArray[9] = 1.0f;
 }
 
+void ViewportCapturer::FlipTexcoords()
+{
+	sTexcoordArray[1] = 1.0f - sTexcoordArray[1];
+	sTexcoordArray[3] = 1.0f - sTexcoordArray[3];
+	sTexcoordArray[5] = 1.0f - sTexcoordArray[5];
+	sTexcoordArray[7] = 1.0f - sTexcoordArray[7];
+	sTexcoordArray[9] = 1.0f - sTexcoordArray[9];
+}
+
 void ViewportCapturer::SetRenderingState()
 {
 	glUseProgram(GetShaderProgram(SHADER_COLOR_MESH));
@@ -197,17 +206,16 @@ void ViewportCapturer::ClearRenderingState()
 	glDisable(GL_DEPTH_TEST);
 }
 
-void ViewportCapturer::CopyPixelsFromScreen_EXPERIMENTAL()
+void ViewportCapturer::CopyPixelsFromScreen()
 {
 	HWND hDesktopWnd = GetDesktopWindow();
 	HDC hDesktopDC = GetDC(hDesktopWnd);
-	HDC hCaptureDC = CreateCompatibleDC(hDesktopDC);
-	HBITMAP hCaptureBitmap = CreateCompatibleBitmap(hDesktopDC, mWidth, mHeight);
-	SelectObject(hCaptureDC, hCaptureBitmap);
 
-	BitBlt(hCaptureDC, 0, 0, mWidth, mHeight, hDesktopDC, mX, mY, SRCCOPY | CAPTUREBLT);
+	SelectObject(mCaptureDC, mCaptureBitmap);
 
-	BITMAPINFO bmi = {0};
+	BitBlt(mCaptureDC, 0, 0, mWidth, mHeight, hDesktopDC, mX, mY, SRCCOPY | CAPTUREBLT);
+
+	BITMAPINFO bmi = { 0 };
 	bmi.bmiHeader.biSize = sizeof(bmi.bmiHeader);
 	bmi.bmiHeader.biWidth = mWidth;
 	bmi.bmiHeader.biHeight = mHeight;
@@ -215,20 +223,15 @@ void ViewportCapturer::CopyPixelsFromScreen_EXPERIMENTAL()
 	bmi.bmiHeader.biBitCount = 32;
 	bmi.bmiHeader.biCompression = BI_RGB;
 
-	GetDIBits(hCaptureDC,
-			  hCaptureBitmap,
-			  0,
-			  mHeight,
-			  mPixelBuffer,
-			  &bmi,
-			  DIB_RGB_COLORS);
-}
+	GetDIBits(mCaptureDC,
+		mCaptureBitmap,
+		0,
+		mHeight,
+		mPixelBuffer,
+		&bmi,
+		DIB_RGB_COLORS);
 
-void ViewportCapturer::CopyPixelsFromScreen()
-{
-	HWND hDesktopWnd = GetDesktopWindow();
-	HDC hDesktopDC = GetDC(hDesktopWnd);
-	HDC hCaptureDC = CreateCompatibleDC(hDesktopDC);
+	ReleaseDC(hDesktopWnd, hDesktopDC);
 }
 
 void ViewportCapturer::InitializeDC()
