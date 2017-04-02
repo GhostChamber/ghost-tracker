@@ -19,8 +19,8 @@
 SDL_GLContext context;
 SDL_Window* window = nullptr;
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 800
+#define SCREEN_WIDTH 1080
+#define SCREEN_HEIGHT 1080
 
 void Close()
 {
@@ -58,8 +58,7 @@ void InitializeGraphics()
 								SDL_WINDOWPOS_UNDEFINED, 
 								SCREEN_WIDTH,
 								SCREEN_HEIGHT, 
-								SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-
+								SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS);
 	if (window == nullptr)
 	{
 		printf("Window could not be created.\n");

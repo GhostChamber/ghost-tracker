@@ -13,7 +13,7 @@
 #define MAX_VIEWPORT_WIDTH 2048
 #define MAX_VIEWPORT_HEIGHT 2048
 
-#define CENTER_OFFSET 0.2f
+#define CENTER_OFFSET 0.0f
 
 #define UI_X_OFFSET -0.05f
 #define UI_Y_OFFSET 0.9f
