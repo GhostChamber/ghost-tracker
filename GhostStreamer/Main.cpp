@@ -12,6 +12,7 @@
 
 #include "Shaders.h"
 #include "StreamManager.h"
+#include "GestureListener.h"
 #include <SDL_events.h>
 #include <SDL_syswm.h>
 
@@ -58,11 +59,14 @@ void InitializeGraphics()
 								SCREEN_WIDTH,
 								SCREEN_HEIGHT, 
 								SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+
 	if (window == nullptr)
 	{
 		printf("Window could not be created.\n");
 		return;
 	}
+
+	//SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
 	context = SDL_GL_CreateContext(window);
 	if (context == nullptr)
@@ -109,6 +113,10 @@ int main(int argc, char* argv[])
 	StreamManager streamer;
 	streamer.SetupHotkeys(window);
 
+	GestureListener gestureListener;
+	gestureListener.Initialize();
+	gestureListener.OpenListenServer();
+
 	// Main loop
 	while (!quit)
 	{
@@ -125,6 +133,7 @@ int main(int argc, char* argv[])
 			}
 		}
 
+		gestureListener.Update();
 		streamer.Update();
 		streamer.Render();
 		//Render();

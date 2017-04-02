@@ -27,3 +27,26 @@ enum class HotkeyID
 	COMMAND_REPLICATED_VIEWPORT,
 	SELECT_POINT
 };
+
+enum class GhostGesture
+{
+	NONE,
+	GRAB,
+	ZOOM,
+	ORBIT
+};
+
+enum class GhostMessage
+{
+	NO_GESTURE = 0,
+	GRAB = 1,
+	ZOOM = 2,
+	ORBIT = 3
+};
+
+enum class ListenerState
+{
+	INACTIVE,
+	LISTENING,
+	CONNECTED
+};

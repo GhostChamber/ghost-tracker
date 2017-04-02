@@ -137,11 +137,17 @@ void ViewportCapturer::Render(Matrix& rotationMatrix) const
 	GLint hMatrix = glGetUniformLocation(hProg, "uMatrix");
 	GLint hWidthScale = glGetUniformLocation(hProg, "uWidthScale");
 	GLint hHeightScale = glGetUniformLocation(hProg, "uHeightScale");
+	GLint hTextureMode = glGetUniformLocation(hProg, "uTextureMode");
+	GLint hColor = glGetUniformLocation(hProg, "uColor");
 
 	glUniform1i(hTexture, 0);
 	glUniformMatrix4fv(hMatrix, 1, GL_FALSE, rotationMatrix.GetArray());
 	glUniform1f(hWidthScale, static_cast<float>(mWidth) / MAX_VIEWPORT_WIDTH);
 	glUniform1f(hHeightScale, static_cast<float>(mHeight) / MAX_VIEWPORT_HEIGHT);
+	glUniform1i(hTextureMode, 1);
+
+	float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+	glUniform4fv(hColor, 1, color);
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 5);
 }
