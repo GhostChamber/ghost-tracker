@@ -39,9 +39,10 @@ enum class GhostGesture
 enum class GhostMessage
 {
 	NO_GESTURE = 0,
-	GRAB = 1,
-	ZOOM = 2,
-	ORBIT = 3
+	ZOOM = 1,
+	PAN = 2,
+	GRAB = 3,
+	ORBIT = 4
 };
 
 enum class ListenerState

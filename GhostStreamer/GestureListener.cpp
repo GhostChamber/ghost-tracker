@@ -116,7 +116,7 @@ void GestureListener::AcceptConnection()
 		return;
 	}
 
-	printf("Client connected!");
+	printf("\nClient connected!\n");
 
 	mConnectionSocket = newSock;
 	mState = ListenerState::CONNECTED;
@@ -134,6 +134,8 @@ void GestureListener::ReadGestureData()
 		{
 			break;
 		}
+
+		printf("Message received!\n");
 
 		if (mStreamManager == nullptr)
 		{

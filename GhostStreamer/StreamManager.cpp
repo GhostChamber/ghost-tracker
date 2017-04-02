@@ -66,7 +66,7 @@ void StreamManager::Render()
 		}
 	}
 
-	//RenderUiIcon();
+	RenderUiIcon();
 
 	ViewportCapturer::ClearRenderingState();
 }

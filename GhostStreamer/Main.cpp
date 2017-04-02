@@ -115,6 +115,8 @@ int main(int argc, char* argv[])
 	GestureListener gestureListener;
 	gestureListener.Initialize();
 	gestureListener.OpenListenServer();
+	gestureListener.SetStreamManager(&streamer);
+
 
 	// Main loop
 	while (!quit)
