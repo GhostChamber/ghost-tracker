@@ -43,7 +43,7 @@ GLSL_VERSION_STRING
 "    vec4 color;\n"
 "    if (uTextureMode == 1)\n"
 "    {\n"
-"        color = texture2D(uTexture, vTexcoord);\n"
+"        color = texture(uTexture, vTexcoord);\n"
 "    }"
 "    else\n"
 "    {\n"
