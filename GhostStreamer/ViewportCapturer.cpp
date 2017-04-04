@@ -69,14 +69,17 @@ void ViewportCapturer::SetRect(int32 x, int32 y, int32 width, int32 height)
 void ViewportCapturer::SetWindow(LPCSTR windowName, LPCSTR windowClass)
 {
 	mSrcWindow = FindWindow(windowClass, windowName);
-	mSrcWindowDC = GetDC(mSrcWindow);
-	RECT windowRect;
-	GetWindowRect(mSrcWindow, &windowRect);
-	mWidth = (windowRect.right - windowRect.left) - (sCaptureClip.left + sCaptureClip.right);
-	mHeight = (windowRect.bottom - windowRect.top) - (sCaptureClip.top + sCaptureClip.bottom);
-	mX = windowRect.left + sCaptureClip.left;
-	mY = windowRect.top + sCaptureClip.top;
-	mIsActive = true;
+	if (mSrcWindow != nullptr)
+	{
+		mSrcWindowDC = GetDC(mSrcWindow);
+		RECT windowRect;
+		GetWindowRect(mSrcWindow, &windowRect);
+		mWidth = (windowRect.right - windowRect.left) - (sCaptureClip.left + sCaptureClip.right);
+		mHeight = (windowRect.bottom - windowRect.top) - (sCaptureClip.top + sCaptureClip.bottom);
+		mX = windowRect.left + sCaptureClip.left;
+		mY = windowRect.top + sCaptureClip.top;
+		mIsActive = true;
+	}
 }
 
 void ViewportCapturer::Update()
