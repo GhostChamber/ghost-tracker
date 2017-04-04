@@ -9,6 +9,7 @@
 
 float ViewportCapturer::sPositionArray[2 * 5] = {0};
 float ViewportCapturer::sTexcoordArray[2 * 5] = {0};
+const RECT ViewportCapturer::sCaptureClip = { 0, 85, 120, 90 };
 
 ViewportCapturer::ViewportCapturer() :
 	mIsActive(false),
@@ -71,10 +72,10 @@ void ViewportCapturer::SetWindow(LPCSTR windowName, LPCSTR windowClass)
 	mSrcWindowDC = GetDC(mSrcWindow);
 	RECT windowRect;
 	GetWindowRect(mSrcWindow, &windowRect);
-	mWidth = (windowRect.right - windowRect.left);
-	mHeight = (windowRect.bottom - windowRect.top);
-	mX = windowRect.left;
-	mY = windowRect.top;
+	mWidth = (windowRect.right - windowRect.left) - (sCaptureClip.left + sCaptureClip.right);
+	mHeight = (windowRect.bottom - windowRect.top) - (sCaptureClip.top + sCaptureClip.bottom);
+	mX = windowRect.left + sCaptureClip.left;
+	mY = windowRect.top + sCaptureClip.top;
 	mIsActive = true;
 }
 

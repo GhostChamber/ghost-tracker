@@ -1,8 +1,8 @@
 #pragma once
 
 #include "ViewportTexture.h"
-#include "Types.h"
 #include "Constants.h"
+#include "Types.h"
 #include <Windows.h>
 #include "Matrix.h"
 
@@ -49,6 +49,7 @@ private:
 
 	static float sPositionArray[2*5];
 	static float sTexcoordArray[2*5];
+	static const RECT sCaptureClip;
 
 	ViewportTexture mViewportTexture;
 	bool mIsActive;
