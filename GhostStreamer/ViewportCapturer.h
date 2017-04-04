@@ -19,6 +19,8 @@ public:
 				 int32 width,
 				 int32 height);
 
+	void SetWindow(LPCSTR windowStr, LPCSTR windowClass);
+
 	void Update();
 
 	void RenderIndividualQuadrant() const;
@@ -49,6 +51,7 @@ private:
 	static float sTexcoordArray[2*5];
 
 	ViewportTexture mViewportTexture;
+	bool mIsActive;
 
 	int32 mX;
 	int32 mY;
@@ -58,6 +61,9 @@ private:
 	int32 mQuadrant;
 
 	uint8* mPixelBuffer;
+
+	HWND mSrcWindow;
+	HDC mSrcWindowDC;
 
 	HDC mCaptureDC;
 	HBITMAP mCaptureBitmap;

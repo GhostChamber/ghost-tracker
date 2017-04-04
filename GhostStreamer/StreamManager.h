@@ -5,6 +5,7 @@
 #include "Types.h"
 #include "Constants.h"
 #include "Enums.h"
+#include <string>
 
 class StreamManager
 {
@@ -19,6 +20,8 @@ public:
 
 	void ActivateHotkey(WPARAM wparam, LPARAM lparam);
 
+	void Initialize(SDL_Window* window);
+
 	void SetupHotkeys(SDL_Window* window) const;
 
 	void SetCurrentGesture(GhostGesture gesture);
@@ -31,6 +34,7 @@ private:
 
 	static float sUIPositionArray[2 * 4];
 	static float sUITexcoordArray[2 * 4];
+	static const LPCSTR sAutoCADWindowNameClass;
 
 	ViewportCapturer mReplicatedCapturer;
 	ViewportCapturer mIndividualCapturers[NUM_DISPLAY_QUADRANTS];

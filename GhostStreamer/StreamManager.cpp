@@ -10,10 +10,12 @@
 
 float StreamManager::sUIPositionArray[2 * 4] = { 0 };
 float StreamManager::sUITexcoordArray[2 * 4] = { 0 };
+const LPCSTR StreamManager::sAutoCADWindowNameClass = "AfxMDIFrame140u";
 
 StreamManager::StreamManager() :
 	mStreamType(StreamType::REPLICATED),
 	mCommandState(CommandState::LISTENING),
+	mCommandedCapturer(nullptr),
 	mPoint1X(0),
 	mPoint1Y(0),
 	mPoint2X(0),
@@ -239,6 +241,13 @@ void StreamManager::ActivateHotkey(WPARAM wparam, LPARAM lparam)
 			mCommandState = CommandState::LISTENING;
 		}
 	}
+}
+
+void StreamManager::Initialize(SDL_Window* window)
+{
+	SetupHotkeys(window);
+	mCommandedCapturer = &mReplicatedCapturer;
+	mCommandedCapturer->SetWindow(nullptr, sAutoCADWindowNameClass);
 }
 
 void StreamManager::SetupHotkeys(SDL_Window* window) const
