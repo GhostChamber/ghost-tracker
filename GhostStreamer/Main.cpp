@@ -15,6 +15,7 @@
 #include "GestureListener.h"
 #include <SDL_events.h>
 #include <SDL_syswm.h>
+#include "SDL_image.h"
 
 SDL_GLContext context;
 SDL_Window* window = nullptr;
@@ -30,6 +31,9 @@ void Close()
 	//Destroy window	
 	SDL_DestroyWindow(window);
 	window = nullptr;
+
+	// Close SDL2_Image resources
+	IMG_Quit();
 
 	//Quit SDL subsystems
 	SDL_Quit();
@@ -88,6 +92,17 @@ void InitializeGraphics()
 
 	LoadShaders();
 	glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
+
+
+	int imgFlags = IMG_INIT_PNG;
+	if (!(IMG_Init(imgFlags) & imgFlags))
+	{
+		printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
+	}
+	else
+	{
+		//Get window surface
+	}
 }
 
 void ProcessWindowsEvent(SDL_SysWMEvent event, StreamManager& streamer)
@@ -137,7 +152,6 @@ int main(int argc, char* argv[])
 		gestureListener.Update();
 		streamer.Update();
 		streamer.Render();
-		//Render();
 
 		SDL_GL_SwapWindow(window);
 	}

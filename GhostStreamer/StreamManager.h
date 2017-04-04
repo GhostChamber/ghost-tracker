@@ -5,6 +5,7 @@
 #include "Types.h"
 #include "Constants.h"
 #include "Enums.h"
+#include "GestureIcon.h"
 
 class StreamManager
 {
@@ -23,14 +24,9 @@ public:
 
 	void SetCurrentGesture(GhostGesture gesture);
 
-	void RenderUiIcon();
-
-	static void InitializeUIVertexArrays();
+	GhostGesture GetCurrentGesture() const;
 
 private:
-
-	static float sUIPositionArray[2 * 4];
-	static float sUITexcoordArray[2 * 4];
 
 	ViewportCapturer mReplicatedCapturer;
 	ViewportCapturer mIndividualCapturers[NUM_DISPLAY_QUADRANTS];
@@ -46,6 +42,8 @@ private:
 	int32 mPoint1Y;
 	int32 mPoint2X;
 	int32 mPoint2Y;
+
+	GestureIcon mGestureIcon;
 
 	GhostGesture mCurrentGesture;
 };

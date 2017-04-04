@@ -95,8 +95,8 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(KINECTSDK20_DIR)/Lib/$(PlatformShortName);$(SolutionDir)/Libraries/$(PlatformShortName);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kinect20.lib;opengl32.lib;SDL2.lib;glew32s.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>kinect20.lib;opengl32.lib;SDL2.lib;glew32s.lib;Ws2_32.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
       <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
     </Link>
@@ -114,7 +114,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(KINECTSDK20_DIR)/Lib/$(PlatformShortName);$(SolutionDir)/Libraries/$(PlatformShortName);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kinect20.lib;opengl32.lib;SDL2.lib;glew32s.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kinect20.lib;opengl32.lib;SDL2.lib;glew32s.lib;Ws2_32.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
       <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
@@ -137,7 +137,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(KINECTSDK20_DIR)/Lib/$(PlatformShortName);$(SolutionDir)/Libraries/$(PlatformShortName);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kinect20.lib;opengl32.lib;SDL2.lib;glew32s.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kinect20.lib;opengl32.lib;SDL2.lib;glew32s.lib;Ws2_32.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
       <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
@@ -160,7 +160,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(KINECTSDK20_DIR)/Lib/$(PlatformShortName);$(SolutionDir)/Libraries/$(PlatformShortName);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kinect20.lib;opengl32.lib;SDL2.lib;glew32s.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kinect20.lib;opengl32.lib;SDL2.lib;glew32s.lib;Ws2_32.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
       <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
@@ -170,6 +170,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GestureIcon.cpp" />
     <ClCompile Include="GestureListener.cpp" />
     <ClCompile Include="InputState.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -184,6 +185,7 @@
   <ItemGroup>
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Enums.h" />
+    <ClInclude Include="GestureIcon.h" />
     <ClInclude Include="GestureListener.h" />
     <ClInclude Include="InputState.h" />
     <ClInclude Include="Matrix.h" />

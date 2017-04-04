@@ -110,6 +110,7 @@ void ViewportCapturer::RenderAllQuadrants() const
 void ViewportCapturer::Render(Matrix& rotationMatrix) const
 {
 	GLuint hProg = GetShaderProgram(SHADER_COLOR_MESH);
+	glUseProgram(hProg);
 
 	GLint hPosition = glGetAttribLocation(hProg, "aPosition");
 	GLint hTexcoord = glGetAttribLocation(hProg, "aTexcoord");
@@ -130,7 +131,7 @@ void ViewportCapturer::Render(Matrix& rotationMatrix) const
 		0,
 		sTexcoordArray);
 
-	glActiveTexture(GL_TEXTURE0);
+	//glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mViewportTexture.GetTextureID());
 
 	GLint hTexture = glGetUniformLocation(hProg, "uTexture");

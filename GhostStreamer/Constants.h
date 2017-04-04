@@ -16,6 +16,9 @@
 #define CENTER_OFFSET 0.0f
 
 #define UI_X_OFFSET -0.05f
-#define UI_Y_OFFSET 0.9f
+#define UI_Y_OFFSET 1.0f
 #define UI_WIDTH 2*UI_X_OFFSET
 #define UI_HEIGHT UI_WIDTH
+
+#define ICON_WIDTH 128
+#define ICON_HEIGHT 128

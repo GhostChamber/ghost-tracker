@@ -15,6 +15,7 @@
     <ClCompile Include="ViewportCapturer.cpp" />
     <ClCompile Include="ViewportTexture.cpp" />
     <ClCompile Include="GestureListener.cpp" />
+    <ClCompile Include="GestureIcon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Matrix.h" />
@@ -34,6 +35,7 @@
     <ClInclude Include="Enums.h" />
     <ClInclude Include="InputState.h" />
     <ClInclude Include="GestureListener.h" />
+    <ClInclude Include="GestureIcon.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Messages">

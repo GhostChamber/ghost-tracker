@@ -60,6 +60,8 @@ void ViewportTexture::StreamPixelsToGPU(uint8* pixels,
 {
 	if (mTextureID != 0U)
 	{
+		glBindTexture(GL_TEXTURE_2D, mTextureID);
+
 		glTexSubImage2D(GL_TEXTURE_2D,
 			0,
 			0,

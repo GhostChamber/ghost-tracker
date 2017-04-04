@@ -142,6 +142,14 @@ int LoadShaders()
 							   pColorMeshFragmentShader);
 	}
 
+	if (nStatus != 0)
+	{
+		printf("Building Color Mesh Shader");
+		nStatus = BuildProgram(SHADER_ICON,
+			pIconVertexShader,
+			pIconFragmentShader);
+	}
+
 	return nStatus;
 }
 

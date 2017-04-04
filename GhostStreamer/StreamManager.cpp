@@ -8,8 +8,7 @@
 #include <SDL_syswm.h>
 #include "Shaders.h"
 
-float StreamManager::sUIPositionArray[2 * 4] = { 0 };
-float StreamManager::sUITexcoordArray[2 * 4] = { 0 };
+
 
 StreamManager::StreamManager() :
 	mStreamType(StreamType::REPLICATED),
@@ -18,7 +17,7 @@ StreamManager::StreamManager() :
 	mPoint1Y(0),
 	mPoint2X(0),
 	mPoint2Y(0),
-	mCurrentGesture(GhostGesture::GRAB)
+	mCurrentGesture(GhostGesture::NONE)
 {
 	for (int32 i = 0; i < NUM_DISPLAY_QUADRANTS; i++)
 	{
@@ -26,7 +25,10 @@ StreamManager::StreamManager() :
 	}
 
 	ViewportCapturer::InitializeMeshArrays();
-	InitializeUIVertexArrays();
+	GestureIcon::InitializeVertexArrays();
+	GestureIcon::LoadTextures();
+
+	mGestureIcon.SetStreamManager(this);
 }
 
 StreamManager::~StreamManager()
@@ -66,96 +68,22 @@ void StreamManager::Render()
 		}
 	}
 
-	RenderUiIcon();
-
 	ViewportCapturer::ClearRenderingState();
+
+	GestureIcon::SetRenderingState();
+	mGestureIcon.Render();
+	GestureIcon::ClearRenderingState();
+}
+
+GhostGesture StreamManager::GetCurrentGesture() const
+{
+	return mCurrentGesture;
 }
 
 void StreamManager::SetCurrentGesture(GhostGesture gesture)
 {
 	mCurrentGesture = gesture;
 }
-
-void StreamManager::RenderUiIcon()
-{
-	GLuint hProg = GetShaderProgram(SHADER_COLOR_MESH);
-
-	GLint hPosition = glGetAttribLocation(hProg, "aPosition");
-	GLint hTexcoord = glGetAttribLocation(hProg, "aTexcoord");
-
-	glEnableVertexAttribArray(hPosition);
-	glEnableVertexAttribArray(hTexcoord);
-
-	glVertexAttribPointer(hPosition,
-		2,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		sUIPositionArray);
-	glVertexAttribPointer(hTexcoord,
-		2,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		sUITexcoordArray);
-
-	//glActiveTexture(GL_TEXTURE0);
-	//glBindTexture(GL_TEXTURE_2D, 0);
-
-	GLint hTexture = glGetUniformLocation(hProg, "uTexture");
-	GLint hMatrix = glGetUniformLocation(hProg, "uMatrix");
-	GLint hWidthScale = glGetUniformLocation(hProg, "uWidthScale");
-	GLint hHeightScale = glGetUniformLocation(hProg, "uHeightScale");
-	GLint hTextureMode = glGetUniformLocation(hProg, "uTextureMode");
-	GLint hColor = glGetUniformLocation(hProg, "uColor");
-
-	glUniform1i(hTexture, 0);
-	glUniform1f(hWidthScale, 1.0f);
-	glUniform1f(hHeightScale, 1.0f);
-	glUniform1i(hTextureMode, 0);
-	
-	float color[4] = { 0.0f };
-
-	switch (mCurrentGesture)
-	{
-	case GhostGesture::NONE:
-		color[0] = 0.0f;
-		color[1] = 0.0f;
-		color[2] = 0.0f;
-		color[3] = 0.0f;
-		break;
-	case GhostGesture::GRAB :
-		color[0] = 1.0f;
-		color[1] = 0.0f;
-		color[2] = 0.0f;
-		color[3] = 0.4f;
-		break;
-	case GhostGesture::ZOOM :
-		color[0] = 0.0f;
-		color[1] = 1.0f;
-		color[2] = 0.0f;
-		color[3] = 0.4f;
-		break;
-	case GhostGesture::ORBIT :
-		color[0] = 0.0f;
-		color[1] = 0.0f;
-		color[2] = 1.0f;
-		color[3] = 0.4f;
-		break;
-	}
-
-	glUniform4fv(hColor, 1, color);
-
-	Matrix matrix;
-	for (int i = 0; i < 4; i++)
-	{
-		matrix.Rotate(90.0f, 0.0f, 0.0f, 1.0f);
-		glUniformMatrix4fv(hMatrix, 1, GL_FALSE, matrix.GetArray());
-
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	}
-}
-
 
 void StreamManager::ActivateHotkey(WPARAM wparam, LPARAM lparam)
 {
@@ -255,26 +183,4 @@ void StreamManager::SetupHotkeys(SDL_Window* window) const
 	RegisterHotKey(wmInfo.info.win.window, static_cast<int32>(HotkeyID::TOGGLE_STREAM_TYPE), MOD_CONTROL | MOD_ALT, '7');
 	RegisterHotKey(wmInfo.info.win.window, static_cast<int32>(HotkeyID::COMMAND_REPLICATED_VIEWPORT), MOD_CONTROL | MOD_ALT, '0');
 	RegisterHotKey(wmInfo.info.win.window, static_cast<int32>(HotkeyID::SELECT_POINT), MOD_CONTROL | MOD_ALT, 'X');
-}
-
-void StreamManager::InitializeUIVertexArrays()
-{
-	// UI Texcoords
-	sUIPositionArray[0] = -UI_X_OFFSET;
-	sUIPositionArray[1] = UI_Y_OFFSET;
-	sUIPositionArray[2] = -UI_X_OFFSET;
-	sUIPositionArray[3] = UI_Y_OFFSET + UI_HEIGHT;
-	sUIPositionArray[4] = UI_X_OFFSET;
-	sUIPositionArray[5] = UI_Y_OFFSET;
-	sUIPositionArray[6] = UI_X_OFFSET;
-	sUIPositionArray[7] = UI_Y_OFFSET + UI_HEIGHT;
-
-	sUITexcoordArray[0] = 0.0f;
-	sUITexcoordArray[1] = 0.0f;
-	sUITexcoordArray[2] = 0.0f;
-	sUITexcoordArray[3] = 1.0f;
-	sUITexcoordArray[4] = 1.0f;
-	sUITexcoordArray[5] = 0.0f;
-	sUITexcoordArray[6] = 1.0f;
-	sUITexcoordArray[7] = 1.0f;
 }
