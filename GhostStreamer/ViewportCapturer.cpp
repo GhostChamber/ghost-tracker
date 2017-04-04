@@ -7,17 +7,21 @@
 #include "OpenGL.h"
 #include "Shaders.h"
 
-float ViewportCapturer::sPositionArray[2*5] = {0};
-float ViewportCapturer::sTexcoordArray[2*5] = {0};
+float ViewportCapturer::sPositionArray[2 * 5] = {0};
+float ViewportCapturer::sTexcoordArray[2 * 5] = {0};
+const RECT ViewportCapturer::sCaptureClip = { 0, 85, 120, 90 };
 
 ViewportCapturer::ViewportCapturer() :
+	mIsActive(false),
 	mX(0),
 	mY(0),
 	mWidth(0),
 	mHeight(0),
 	mQuadrant(0),
-	mCaptureDC(0),
-	mCaptureBitmap(0)
+	mSrcWindow(nullptr),
+	mSrcWindowDC(nullptr),
+	mCaptureDC(nullptr),
+	mCaptureBitmap(nullptr)
 {
 	mPixelBuffer = new uint8[MAX_VIEWPORT_WIDTH * MAX_VIEWPORT_HEIGHT * 4];
 	memset(mPixelBuffer, 0, MAX_VIEWPORT_WIDTH * MAX_VIEWPORT_HEIGHT * 4);
@@ -36,15 +40,14 @@ ViewportCapturer::~ViewportCapturer()
 {
 	DestroyDC();
 
-	delete [] mPixelBuffer;
+	delete[] mPixelBuffer;
 	mPixelBuffer = nullptr;
 }
 
-void ViewportCapturer::SetRect(int32 x,
-							   int32 y,
-							   int32 width,
-							   int32 height)
+void ViewportCapturer::SetRect(int32 x, int32 y, int32 width, int32 height)
 {
+	mSrcWindow = GetDesktopWindow();
+	mSrcWindowDC = GetDC(mSrcWindow);
 	mX = x;
 	mY = y;
 	mWidth = width;
@@ -53,23 +56,37 @@ void ViewportCapturer::SetRect(int32 x,
 	if (width > MAX_VIEWPORT_WIDTH)
 	{
 		printf("Max viewport width surpassed for viewport %d\n", mQuadrant);
+		return;
 	}
 	if (height > MAX_VIEWPORT_HEIGHT)
 	{
 		printf("Max viewport height surpassed for viewport %d\n", mQuadrant);
+		return;
+	}
+	mIsActive = true;
+}
+
+void ViewportCapturer::SetWindow(LPCSTR windowName, LPCSTR windowClass)
+{
+	mSrcWindow = FindWindow(windowClass, windowName);
+	if (mSrcWindow != nullptr)
+	{
+		mSrcWindowDC = GetDC(mSrcWindow);
+		RECT windowRect;
+		GetWindowRect(mSrcWindow, &windowRect);
+		mWidth = (windowRect.right - windowRect.left) - (sCaptureClip.left + sCaptureClip.right);
+		mHeight = (windowRect.bottom - windowRect.top) - (sCaptureClip.top + sCaptureClip.bottom);
+		mX = windowRect.left + sCaptureClip.left;
+		mY = windowRect.top + sCaptureClip.top;
+		mIsActive = true;
 	}
 }
 
 void ViewportCapturer::Update()
 {
-	if (mWidth > 0 &&
-		mWidth < MAX_VIEWPORT_WIDTH &&
-		mHeight > 0 &&
-		mHeight < MAX_VIEWPORT_HEIGHT &&
-		mViewportTexture.GetTextureID() != 0)
+	if (mIsActive)
 	{
 		CopyPixelsFromScreen();
-		//CopyPixelsFromScreen_EXPERIMENTAL();
 
 		mViewportTexture.StreamPixelsToGPU(mPixelBuffer, mWidth, mHeight);
 	}
@@ -77,9 +94,7 @@ void ViewportCapturer::Update()
 
 void ViewportCapturer::RenderIndividualQuadrant() const
 {
-	if (mWidth != 0 &&
-		mHeight != 0 && 
-		mViewportTexture.GetTextureID() != 0U)
+	if (mIsActive)
 	{
 		// Assumed that caller has enabled rendering state with 
 		// ViewportCapturer::SetRenderingState().
@@ -90,7 +105,7 @@ void ViewportCapturer::RenderIndividualQuadrant() const
 	}
 }
 
-void ViewportCapturer::RenderAllQuadrants() const 
+void ViewportCapturer::RenderAllQuadrants() const
 {
 	if (mWidth != 0 &&
 		mHeight != 0 &&
@@ -169,7 +184,7 @@ void ViewportCapturer::InitializeMeshArrays()
 	// Bottom left
 	sPositionArray[2] = 0.0f - CENTER_OFFSET;
 	sPositionArray[3] = 0.0f + CENTER_OFFSET;
-	sTexcoordArray[2] = 0.5f - CENTER_OFFSET/2;
+	sTexcoordArray[2] = 0.5f - CENTER_OFFSET / 2;
 	sTexcoordArray[3] = 0.0f;
 
 	// Top middle
@@ -181,7 +196,7 @@ void ViewportCapturer::InitializeMeshArrays()
 	// Bottom right
 	sPositionArray[6] = 0.0f + CENTER_OFFSET;
 	sPositionArray[7] = 0.0f + CENTER_OFFSET;
-	sTexcoordArray[6] = 0.5f + CENTER_OFFSET/2;
+	sTexcoordArray[6] = 0.5f + CENTER_OFFSET / 2;
 	sTexcoordArray[7] = 0.0f;
 
 	// Top right
@@ -215,14 +230,10 @@ void ViewportCapturer::ClearRenderingState()
 
 void ViewportCapturer::CopyPixelsFromScreen()
 {
-	HWND hDesktopWnd = GetDesktopWindow();
-	HDC hDesktopDC = GetDC(hDesktopWnd);
-
 	SelectObject(mCaptureDC, mCaptureBitmap);
+	BitBlt(mCaptureDC, 0, 0, mWidth, mHeight, mSrcWindowDC, mX, mY, SRCCOPY | CAPTUREBLT);
 
-	BitBlt(mCaptureDC, 0, 0, mWidth, mHeight, hDesktopDC, mX, mY, SRCCOPY | CAPTUREBLT);
-
-	BITMAPINFO bmi = { 0 };
+	BITMAPINFO bmi = {0};
 	bmi.bmiHeader.biSize = sizeof(bmi.bmiHeader);
 	bmi.bmiHeader.biWidth = mWidth;
 	bmi.bmiHeader.biHeight = mHeight;
@@ -238,7 +249,7 @@ void ViewportCapturer::CopyPixelsFromScreen()
 		&bmi,
 		DIB_RGB_COLORS);
 
-	ReleaseDC(hDesktopWnd, hDesktopDC);
+	ReleaseDC(mSrcWindow, mSrcWindowDC);
 }
 
 void ViewportCapturer::InitializeDC()

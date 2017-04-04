@@ -6,6 +6,7 @@
 #include "Constants.h"
 #include "Enums.h"
 #include "GestureIcon.h"
+#include <string>
 
 class StreamManager
 {
@@ -20,6 +21,8 @@ public:
 
 	void ActivateHotkey(WPARAM wparam, LPARAM lparam);
 
+	void Initialize(SDL_Window* window);
+
 	void SetupHotkeys(SDL_Window* window) const;
 
 	void SetCurrentGesture(GhostGesture gesture);
@@ -27,6 +30,8 @@ public:
 	GhostGesture GetCurrentGesture() const;
 
 private:
+
+	static const LPCSTR sAutoCADWindowNameClass;
 
 	ViewportCapturer mReplicatedCapturer;
 	ViewportCapturer mIndividualCapturers[NUM_DISPLAY_QUADRANTS];

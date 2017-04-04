@@ -125,7 +125,8 @@ int main(int argc, char* argv[])
 	SDL_Event e;
 
 	StreamManager streamer;
-	streamer.SetupHotkeys(window);
+	streamer.Initialize(window);
+
 
 	GestureListener gestureListener;
 	gestureListener.Initialize();
